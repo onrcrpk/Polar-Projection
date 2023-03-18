@@ -2,14 +2,14 @@
 <html>
 <head>
   <meta charset="UTF-8"></meta>
-  <link rel="stylesheet" href="../../css/leaflet.css" />
+  <link rel="stylesheet" href="css/leaflet.css" />
   <title>Leaflet Example</title>
 
   <!-- Load required libraries -->
-  <script src="../../js/jquery.js"></script>
-  <script src="../../js/leaflet.js"></script>
-  <script src="../../js/proj4.js"></script>
-  <script src="../../js/proj4leaflet.js"></script>
+  <script src="js/jquery.js"></script>
+  <script src="js/leaflet.js"></script>
+  <script src="js/proj4.js"></script>
+  <script src="js/proj4leaflet.js"></script>
 
   <style>
   body {
@@ -81,9 +81,7 @@
 
     // Use standard Lat/Lng for markers, they will be reprojected to the
     // map's CRS automatically.
-    L.marker([51, -114]).addTo(map);
-    L.marker([90, 0]).addTo(map);
-    L.marker([0, 0]).addTo(map);
+
     // Create a marker and add it to the map
 var marker = L.marker([52.3784, 4.9000]).addTo(map);
 
