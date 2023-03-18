@@ -1,7 +1,9 @@
 <!doctype html>
 <html>
+
 <head>
-  <meta charset="UTF-8"></meta>
+  <meta charset="UTF-8">
+  </meta>
   <link rel="stylesheet" href="css/leaflet.css" />
   <title>Leaflet Example</title>
 
@@ -12,114 +14,128 @@
   <script src="js/proj4leaflet.js"></script>
 
   <style>
-  body {
-    padding: 0px;
-    margin: 0px;
-  }
-  #xmap {
-    min-width: 300px;
-    min-height: 300px;
-  }
+    body {
+      padding: 0px;
+      margin: 0px;
+    }
+
+    #xmap {
+      min-width: 300px;
+      min-height: 300px;
+    }
   </style>
 </head>
+
 <body>
   <div id="xmap"></div>
 
   <script>
-  // Resize map container to full-screen
-  var resize = function () {
-    $("#xmap").css({
-      width: $(window).width(),
-      height: $(window).height()
-    });
-  };
-
-  $(document).ready(function () {
-    // All the details specific to the custom tile layer.
-    // Custom extent for our EPSG:3571-3576 tiles
-    var extent = 11000000 + 9036842.762 + 667;
-    var tileDetails = {
-      code: 'EPSG:3575',
-      proj4def: '+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs',
-      origin: [-extent, extent],
-      tilesURL: 'http://{s}.tiles.arcticconnect.ca/osm_3575/{z}/{x}/{y}.png',
-      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      zoom: {
-        min: 0,
-        max: 18
-      }
+    // Resize map container to full-screen
+    var resize = function () {
+      $("#xmap").css({
+        width: $(window).width(),
+        height: $(window).height()
+      });
     };
 
-    // Generate Resolutions Array from origin information.
-    // maxResolution is map width/height (origin[1] - origin[0]) metres divided
-    // by 256 pixels (size of zoom level 0 tile). All other zoom levels, or
-    // resolutions, are a factor of that.
-    var maxResolution = (tileDetails.origin[1] - tileDetails.origin[0]) / 256;
-    var resolutions = [];
-    for (var i = tileDetails.zoom.min; i <= tileDetails.zoom.max; i++) {
-      resolutions.push(maxResolution / Math.pow(2, i));
-    };
+    $(document).ready(function () {
+      // All the details specific to the custom tile layer.
+      // Custom extent for our EPSG:3571-3576 tiles
+      var extent = 11000000 + 9036842.762 + 667;
+      var tileDetails = {
+        code: 'EPSG:3575',
+        proj4def: '+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs',
+        origin: [-extent, extent],
+        tilesURL: 'http://{s}.tiles.arcticconnect.ca/osm_3575/{z}/{x}/{y}.png',
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+        zoom: {
+          min: 0,
+          max: 18
+        }
+      };
 
-    // Create new CRS for EPSG:3573.
-    // Proj4 definition string can be found online.
-    var CRS = new L.Proj.CRS(tileDetails.code,
-      tileDetails.proj4def, {
+      // Generate Resolutions Array from origin information.
+      // maxResolution is map width/height (origin[1] - origin[0]) metres divided
+      // by 256 pixels (size of zoom level 0 tile). All other zoom levels, or
+      // resolutions, are a factor of that.
+      var maxResolution = (tileDetails.origin[1] - tileDetails.origin[0]) / 256;
+      var resolutions = [];
+      for (var i = tileDetails.zoom.min; i <= tileDetails.zoom.max; i++) {
+        resolutions.push(maxResolution / Math.pow(2, i));
+      };
+
+      // Create new CRS for EPSG:3573.
+      // Proj4 definition string can be found online.
+      var CRS = new L.Proj.CRS(tileDetails.code,
+        tileDetails.proj4def, {
         origin: tileDetails.origin,
         resolutions: resolutions
       });
 
-    var map = L.map('xmap', {
-      continuousWorld: true,
-      minZoom: tileDetails.zoom.min,
-      maxZoom: tileDetails.zoom.max,
-      crs: CRS
-    });
-
-    L.tileLayer(tileDetails.tilesURL, {
-      attribution: tileDetails.attribution
-    }).addTo(map);
-
-    // Use standard Lat/Lng for markers, they will be reprojected to the
-    // map's CRS automatically.
-
-    // Create a marker and add it to the map
-var marker = L.marker([52.3784, 4.9000]).addTo(map);
-
-// Add a popup to the marker
-marker.bindPopup("Netherlands");
-
-
-
-// Step 2: Retrieve the JSON data from the API endpoint
-fetch('https://xeno-canto.org/api/2/recordings?query=gen:"Alle"%20grp:"birds"')
-.then(function(response) {
-  return response.json();
-})
-.then(function(data) {
-  // Step 3: Parse the JSON data into a JavaScript object
-  var recordings = data.recordings;
-
-  // Step 4-7: Loop through the recordings array and add a new marker for each item on the map
-  recordings.forEach(function(recording) {
-    L.marker([recording.lat, recording.lng])
-      .bindPopup('<b>' + recording.en + '</b><br>' + recording.loc + '<br><audio controls><source src="' + recording.file + '" type="audio/mpeg"></audio>')
-      .addTo(map);
-  });
-});
-
-
-
-    map.setView([75, -100], 2);
-
-    // Keep map full-size
-    $(window).on("resize", function () {
-      resize();
-      map.invalidateSize({
-        debounceMoveend: true
+      var map = L.map('xmap', {
+        continuousWorld: true,
+        minZoom: tileDetails.zoom.min,
+        maxZoom: tileDetails.zoom.max,
+        crs: CRS
       });
+
+      L.tileLayer(tileDetails.tilesURL, {
+        attribution: tileDetails.attribution
+      }).addTo(map);
+
+      // Use standard Lat/Lng for markers, they will be reprojected to the
+      // map's CRS automatically.
+
+      // Create a marker and add it to the map
+      var marker = L.marker([52.3784, 4.9000]).addTo(map);
+
+      // Add a popup to the marker
+      marker.bindPopup("Netherlands");
+
+      // Define a new icon object
+      var myIcon = L.icon({
+        iconUrl: 'a-14.png',
+        iconSize: [17, 17],
+        iconAnchor: [1, 1],
+        popupAnchor: [0, -15]
+      });
+
+
+
+      // Step 2: Retrieve the JSON data from the API endpoint
+      fetch('https://xeno-canto.org/api/2/recordings?query=gen:"Alle"%20grp:"birds"')
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          // Step 3: Parse the JSON data into a JavaScript object
+          var recordings = data.recordings;
+
+
+
+          // Step 4-7: Loop through the recordings array and add a new marker for each item on the map
+          recordings.forEach(function (recording) {
+            L.marker([recording.lat, recording.lng], {
+              icon: myIcon
+            }).bindPopup('<b>' + recording.en + '</b><br>' + recording.loc + '<br><audio controls><source src="' + recording.file + '" type="audio/mpeg"></audio>')
+              .addTo(map);
+          });
+        });
+
+
+
+      map.setView([90, 0], 4);
+
+      // Keep map full-size
+      $(window).on("resize", function () {
+        resize();
+        map.invalidateSize({
+          debounceMoveend: true
+        });
+      });
+      $(window).trigger("resize");
     });
-    $(window).trigger("resize");
-  });
-</script>
+  </script>
 </body>
+
 </html>
