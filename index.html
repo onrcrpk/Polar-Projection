@@ -13,7 +13,7 @@
   <script src="js/proj4.js"></script>
   <script src="js/proj4leaflet.js"></script>
 
-  
+
   <style>
     body {
       padding: 0px;
@@ -24,32 +24,25 @@
       height: 90vh;
       width: 75%;
     }
-    
-    @media only screen and (min-width: 768px) {
-      #xmap {
-        height: calc(100vh - 120px);
-      }
+
+
+
+    .legend {
+      background-color: white;
+      padding: 5px;
+      border: 1px solid #ccc;
     }
 
+    .legend div {
+      margin: 5px;
+    }
 
-.legend {
-  background-color: white;
-  padding: 5px;
-  border: 1px solid #ccc;
-}
-
-.legend div {
-  margin: 5px;
-}
-
-.legend img {
-  width: 20px;
-  height: 20px;
-  margin-right: 5px;
-  vertical-align: middle;
-}
-    
-
+    .legend img {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
   </style>
 </head>
 
@@ -121,83 +114,83 @@
       });
 
 
-// Step 2: Retrieve the JSON data from the API endpoint
-fetch('https://xeno-canto.org/api/2/recordings?query=Larus%20hyperboreus')
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
-    // Step 3: Parse the JSON data into a JavaScript object
-    var recordings = data.recordings;
+      // Step 2: Retrieve the JSON data from the API endpoint
+      fetch('https://xeno-canto.org/api/2/recordings?query=Larus%20hyperboreus')
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          // Step 3: Parse the JSON data into a JavaScript object
+          var recordings = data.recordings;
 
-    // Step 4-7: Loop through the recordings array and add a new marker for each item on the map
-    recordings.forEach(function (recording) {
-      var ssp = recording.ssp;
-      var myIconUrl = '';
-      var iconSize = [17, 17];
+          // Step 4-7: Loop through the recordings array and add a new marker for each item on the map
+          recordings.forEach(function (recording) {
+            var ssp = recording.ssp;
+            var myIconUrl = '';
+            var iconSize = [17, 17];
 
-      // Set the icon based on the ssp value
-      switch (ssp) {
-        case '':
-          myIconUrl = 'x-14.png';
-          iconSize = [17, 17];
-          break;
-        case 'barrovianus':
-          myIconUrl = 'b-14.png';
-          iconSize = [17, 17];
-          break;
-        case 'hyperboreus':
-          myIconUrl = 'a-14.png';
-          iconSize = [17, 17];
-          break;
-        case 'pallidissimus':
-          myIconUrl = 'd-14.png';
-          iconSize = [17, 17];
-          break;
-        // Add additional cases for other ssp values as needed
-        default:
-          myIconUrl = 'default.png';
-      }
+            // Set the icon based on the ssp value
+            switch (ssp) {
+              case '':
+                myIconUrl = 'x-14.png';
+                iconSize = [17, 17];
+                break;
+              case 'barrovianus':
+                myIconUrl = 'b-14.png';
+                iconSize = [17, 17];
+                break;
+              case 'hyperboreus':
+                myIconUrl = 'a-14.png';
+                iconSize = [17, 17];
+                break;
+              case 'pallidissimus':
+                myIconUrl = 'd-14.png';
+                iconSize = [17, 17];
+                break;
+              // Add additional cases for other ssp values as needed
+              default:
+                myIconUrl = 'default.png';
+            }
 
-      // Define a new icon object based on the ssp value
-      var myIcon = L.icon({
-        iconUrl: myIconUrl,
-        iconSize: iconSize,
-        iconAnchor: [1, 1],
-        popupAnchor: [0, -15]
-      });
+            // Define a new icon object based on the ssp value
+            var myIcon = L.icon({
+              iconUrl: myIconUrl,
+              iconSize: iconSize,
+              iconAnchor: [1, 1],
+              popupAnchor: [0, -15]
+            });
 
-      // Add a new marker for this recording with the appropriate icon
-      L.marker([recording.lat, recording.lng], {
-        icon: myIcon
-      }).bindPopup('<b>' + recording.en + '</b><br>' + recording.loc + '<br><audio controls><source src="' + recording.file + '" type="audio/mpeg"></audio>')
-        .addTo(map);
-    });
-  });
+            // Add a new marker for this recording with the appropriate icon
+            L.marker([recording.lat, recording.lng], {
+              icon: myIcon
+            }).bindPopup('<b>' + recording.en + '</b><br>' + recording.loc + '<br><audio controls><source src="' + recording.file + '" type="audio/mpeg"></audio>')
+              .addTo(map);
+          });
+        });
 
 
 
 
       map.setView([80, 0], 3);
 
-      
+
       // Step 1: Create a new legend control
-var legend = L.control({
-  position: 'topright'
-});
+      var legend = L.control({
+        position: 'topright'
+      });
 
-legend.onAdd = function (map) {
-  var div = L.DomUtil.create('div', 'legend');
-  div.innerHTML += '<div><img src="a-14.png"><span>hyperboreus</span></div>';
-  div.innerHTML += '<div><img src="b-14.png"><span>barrovianus</span></div>';
-  div.innerHTML += '<div><img src="d-14.png"><span>pallidissimus</span></div>';
-  div.innerHTML += '<div><img src="x-14.png"><span>No subspecies specified</span></div>';
-  return div;
-};
+      legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'legend');
+        div.innerHTML += '<div><img src="a-14.png"><span>hyperboreus</span></div>';
+        div.innerHTML += '<div><img src="b-14.png"><span>barrovianus</span></div>';
+        div.innerHTML += '<div><img src="d-14.png"><span>pallidissimus</span></div>';
+        div.innerHTML += '<div><img src="x-14.png"><span>No subspecies specified</span></div>';
+        return div;
+      };
 
-// Step 3: Add the legend to the map
-legend.addTo(map);
-});
+      // Step 3: Add the legend to the map
+      legend.addTo(map);
+    });
 
 
   </script>
