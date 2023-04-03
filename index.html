@@ -12,7 +12,8 @@
   <script src="js/leaflet.js"></script>
   <script src="js/proj4.js"></script>
   <script src="js/proj4leaflet.js"></script>
-
+  <script src="js/leaflet-kmz-src.js"></script>
+  
 
   <style>
     body {
@@ -98,6 +99,24 @@
 
       // Use standard Lat/Lng for markers, they will be reprojected to the
       // map's CRS automatically.
+      // Define and instantiate layer control
+var control = L.control.layers().addTo(map);
+// Instantiate KMZ layer (async)
+var kmz = L.kmzLayer().addTo(map);
+kmz.on('load', function (e) {
+  // Get the name without the ".kmz" extension
+  var nameWithoutExtension = e.name.replace('.kmz', '');
+  control.addOverlay(e.layer, nameWithoutExtension);
+});
+// Add remote KMZ files as layers (NB if they are 3rd-party servers, they MUST have CORS enabled)
+kmz.load('Pagophila_eburnea.kmz');
+
+
+
+
+
+
+
 
       // Define a new icon object
       var myIcon = L.icon({
